@@ -40,14 +40,6 @@ function validatedRequest(requestHandler, bodySchema) {
     };
 }
 
-function httpGet(url)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url, false );
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-}
-
 module.exports = {
     assetRequest : validatedRequest(assetRequest, apiSchemas.requestedResourceBundle),
     statusRequest : statusRequest

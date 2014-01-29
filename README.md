@@ -1,4 +1,4 @@
-## Requestr API
+## RequestrAPI
 
 ###Installation
 1.  `npm install`

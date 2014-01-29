@@ -1,5 +1,4 @@
 module.exports = function(grunt) {
-
     [
         'grunt-contrib-uglify',
         'grunt-contrib-watch',
@@ -8,12 +7,9 @@ module.exports = function(grunt) {
         'grunt-shell'
     ].forEach(grunt.loadNpmTasks);
 
-    // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        // restart the server whenever something changes
-        // @TODO restart when something relevant changes
         nodemon: {
             dev: {
                 script: 'app.js',
