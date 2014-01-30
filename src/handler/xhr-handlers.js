@@ -9,12 +9,17 @@ function statusRequest(req, res) {
 }
 
 // todo (jmccarthy14@) validate responses to prevent 'undefined' errors
+// todo (jmccarthy14@) create header blacklist
 function assetRequest(req, res) {
     var requestedResourceBundle = req.body;
     var returnedAssets = [];
     var urlsToProcess = requestedResourceBundle.Urls.length;
+    var options = {
+        headers : req.headers
+    };
     requestedResourceBundle.Urls.forEach(function(resource) {
-        request(resource.Url, function (error, response, body) {
+        options.url = resource.Url;
+        request(options, function (error, response, body) {
             var data = resource.Type == 'STRING' ? body : new Buffer(body).toString('base64');
             var shasum = crypto.createHash('sha1').update(data);
             var returnedAsset = {
