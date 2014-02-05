@@ -15,11 +15,15 @@ function assetRequest(req, res) {
     var returnedAssets = [];
     var urlsToProcess = requestedResourceBundle.Urls.length;
     var options = {
-        headers : req.headers
+        headers : {
+            'User-Agent': req.headers['user-agent'],
+            'Origin': req.headers.origin
+        }
     };
     requestedResourceBundle.Urls.forEach(function(resource) {
         options.url = resource.Url;
         request(options, function (error, response, body) {
+            // todo (jmc@) error handling
             var data = resource.Type == 'STRING' ? body : new Buffer(body).toString('base64');
             var shasum = crypto.createHash('sha1').update(data);
             var returnedAsset = {
@@ -30,7 +34,7 @@ function assetRequest(req, res) {
             };
 
             if (returnedAsset.Token != resource.Token) {
-                returnedAsset.Data = data;
+                returnedAsset.Data = "data:" + returnedAsset.ContentType + ";base64," + data;
             }
             returnedAssets.push(returnedAsset);
             if (--urlsToProcess == 0) {
@@ -42,6 +46,7 @@ function assetRequest(req, res) {
 
 
 // Utility
+// TODO (jmc@) include this once nodejs is upgraded past 11.2 or patch schema-inspector
 function validatedRequest(requestHandler, bodySchema) {
     return function (req, res) {
         schemaInspector.validate(bodySchema, req.body, function validationResult(err, result) {
@@ -55,6 +60,7 @@ function validatedRequest(requestHandler, bodySchema) {
 }
 
 module.exports = {
-    assetRequest: validatedRequest(assetRequest, apiSchemas.requestedResourceBundle),
+//    assetRequest: validatedRequest(assetRequest, apiSchemas.requestedResourceBundle),
+    assetRequest: assetRequest,
     statusRequest: statusRequest
 };
