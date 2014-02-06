@@ -21,10 +21,9 @@ function assetRequest(req, res) {
         }
     };
     requestedResourceBundle.Urls.forEach(function(resource) {
-        options.url = resource.Url;
-        request(options, function (error, response, body) {
+        request({uri:resource.Url, encoding: 'binary'}, function (error, response, body) {
             // todo (jmc@) error handling
-            var data = resource.Type == 'STRING' ? body : new Buffer(body).toString('base64');
+            var data = resource.Type == 'STRING' ? body : new Buffer(body.toString(), 'binary').toString('base64');
             var shasum = crypto.createHash('sha1').update(data);
             var returnedAsset = {
                 Url: resource.Url,
@@ -38,7 +37,7 @@ function assetRequest(req, res) {
             }
             returnedAssets.push(returnedAsset);
             if (--urlsToProcess == 0) {
-                res.send(JSON.stringify(returnedAssets));
+                res.send(JSON.stringify({Resources: returnedAssets}));
             }
         })
     });
