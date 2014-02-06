@@ -21,10 +21,13 @@ function assetRequest(req, res) {
         }
     };
     requestedResourceBundle.Urls.forEach(function(resource) {
-        options.url = resource.Url;
-        request(options, function (error, response, body) {
+        var ops = {uri: resource.Url};
+        if (resource.Type !== 'STRING') {
+          ops.encoding = 'binary';
+        }
+        request(ops, function (error, response, body) {
             // todo (jmc@) error handling
-            var data = resource.Type == 'STRING' ? body : new Buffer(body).toString('base64');
+            var data = resource.Type == 'STRING' ? body : new Buffer(body.toString(), 'binary').toString('base64');
             var shasum = crypto.createHash('sha1').update(data);
             var returnedAsset = {
                 Url: resource.Url,
@@ -34,11 +37,11 @@ function assetRequest(req, res) {
             };
 
             if (returnedAsset.Token != resource.Token) {
-                returnedAsset.Data = "data:" + returnedAsset.ContentType + ";base64," + data;
+                returnedAsset.Data = returnedAsset.Type == 'STRING' ? data : ("data:" + returnedAsset.ContentType + ";base64," + data);
             }
             returnedAssets.push(returnedAsset);
             if (--urlsToProcess == 0) {
-                res.send(JSON.stringify(returnedAssets));
+                res.send(JSON.stringify({Resources: returnedAssets}));
             }
         })
     });
