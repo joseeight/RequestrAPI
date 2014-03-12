@@ -36,7 +36,7 @@ function assetRequest(request, response, next) {
         if (resource.Type !== 'STRING') {
           ops.encoding = 'binary';
         }
-        request(ops, function (error, assetResponse, body) {
+        Request(ops, function (error, assetResponse, body) {
             // TODO (jmccarthy14@): Add error handling here.
             var data = resource.Type == 'STRING' ? body : new Buffer(body.toString(), 'binary').toString('base64');
             var shasum = crypto.createHash('sha1').update(data);
