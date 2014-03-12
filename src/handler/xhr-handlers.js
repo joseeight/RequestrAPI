@@ -1,6 +1,6 @@
 var schemaInspector = require('schema-inspector');
 var apiSchemas = require('../model/api-schemas.js');
-var request = require('request');
+var Request = require('request');
 var crypto = require('crypto');
 
 /**
