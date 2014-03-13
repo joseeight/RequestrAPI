@@ -38,16 +38,25 @@ function assetRequest(request, response, next) {
         }
         Request(ops, function (error, assetResponse, body) {
             // TODO (jmccarthy14@): Add error handling here.
-            var data = resource.Type == 'STRING' ? body : new Buffer(body.toString(), 'binary').toString('base64');
-            var shasum = crypto.createHash('sha1').update(data);
+            var data, shasum;
+            if (body) {
+              data = resource.Type === 'STRING' ? body : new Buffer(body.toString(), 'binary').toString('base64');
+              shasum = crypto.createHash('sha1').update(data);
+            }
             var returnedAsset = {
                 Url: resource.Url,
-                Token: shasum.digest('hex'),
-                ContentType: assetResponse.headers['content-type'].split(';')[0],
                 Type: resource.Type == 'STRING' ? resource.Type : 'DATA_URI'
             };
+            
+            if (shasum) {
+              returnedAsset.Token = shasum.digest('hex');
+            }
+            
+            if (assetResponse && assetResponse.headers) {
+              returnedAsset.ContentType = assetResponse.headers['content-type'].split(';')[0];
+            }
 
-            if (returnedAsset.Token != resource.Token) {
+            if ((returnedAsset.Token !== resource.Token) && data) {
                 returnedAsset.Data = returnedAsset.Type == 'STRING' ? data : ("data:" + returnedAsset.ContentType + ";base64," + data);
             }
             returnedAssets.push(returnedAsset);
