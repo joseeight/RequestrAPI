@@ -59,7 +59,11 @@ function assetRequest(request, response, next) {
             if ((returnedAsset.Token !== resource.Token) && data) {
                 returnedAsset.Data = returnedAsset.Type == 'STRING' ? data : ("data:" + returnedAsset.ContentType + ";base64," + data);
             }
-            returnedAssets.push(returnedAsset);
+            // Making sure only assets with data are sent back.
+            if (returnedAsset.Data) {
+              returnedAssets.push(returnedAsset);
+            }
+            
             if (--urlsToProcess == 0) {
                 response.send(JSON.stringify({Resources: returnedAssets}));
             }
