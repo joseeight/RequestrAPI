@@ -18,7 +18,7 @@ expressServer.all('*', function(req, res, next){
 });
 
 // Start routes
-// todo (jmccarthy14@) make a handler per resource
+// TODO (jmccarthy14@): Make a single handler per resource.
 expressServer.get('/', viewHandlers.indexView);
 expressServer.get('/status', xhrHandlers.statusRequest);
 expressServer.post('/asset', xhrHandlers.assetRequest);
