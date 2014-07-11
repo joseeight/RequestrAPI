@@ -3,6 +3,7 @@ var path = require('path');
 var server = express();
 
 server.configure(function() {
+<<<<<<< HEAD
   server.use(express.favicon());
   server.use(express.logger('dev'));
   server.use(express.json());
@@ -10,6 +11,14 @@ server.configure(function() {
   server.use(express.methodOverride());
   server.use(express.compress());
   server.use(express.static(path.join(__dirname, 'public')));
+=======
+    server.use(express.favicon());
+    server.use(express.logger('dev'));
+    server.use(express.json());
+    server.use(express.urlencoded());
+    server.use(express.methodOverride());
+    server.use(express.static(path.join(__dirname, 'public')));
+>>>>>>> refs/heads/master-joseeight
 });
 
 if ('development' == server.get('env')) {
